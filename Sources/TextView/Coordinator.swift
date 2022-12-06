@@ -12,12 +12,14 @@ extension TextView.Representable {
         var onCommit: (() -> Void)?
         var onEditingChanged: (() -> Void)?
         var shouldEditInRange: ((Range<String.Index>, String) -> Bool)?
+				var openURL: OpenURLAction?
 
         init(text: Binding<NSAttributedString>,
              calculatedHeight: Binding<CGFloat>,
              shouldEditInRange: ((Range<String.Index>, String) -> Bool)?,
              onEditingChanged: (() -> Void)?,
-             onCommit: (() -> Void)?
+             onCommit: (() -> Void)?,
+						 openURL: OpenURLAction?
         ) {
             textView = UIKitTextView()
             textView.backgroundColor = .clear
@@ -28,6 +30,7 @@ extension TextView.Representable {
             self.shouldEditInRange = shouldEditInRange
             self.onEditingChanged = onEditingChanged
             self.onCommit = onCommit
+						self.openURL = openURL
 
             super.init()
             textView.delegate = self
@@ -42,6 +45,16 @@ extension TextView.Representable {
             recalculateHeight()
             onEditingChanged?()
         }
+
+			func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+				if let openURL = self.openURL {
+					openURL(url)
+					
+					return false
+				} else {
+					return true
+				}
+			}
 
         func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
             if onCommit != nil, text == "\n" {

@@ -2,6 +2,7 @@ import SwiftUI
 
 extension TextView {
     struct Representable: UIViewRepresentable {
+				@Environment(\.openURL) var openURL
 
         @Binding var text: NSAttributedString
         @Binding var calculatedHeight: CGFloat
@@ -39,7 +40,8 @@ extension TextView {
                 calculatedHeight: $calculatedHeight,
                 shouldEditInRange: shouldEditInRange,
                 onEditingChanged: onEditingChanged,
-                onCommit: onCommit
+                onCommit: onCommit,
+								openURL: openURL
             )
         }
 
