@@ -48,9 +48,13 @@ extension TextView.Representable {
 
 			func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
 				if let openURL = self.openURL {
-					openURL(url)
-					
-					return false
+					var result: Bool = false
+
+					openURL(url) { accepted in
+						result = accepted
+					}
+
+					return result
 				} else {
 					return true
 				}
