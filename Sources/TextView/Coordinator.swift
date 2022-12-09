@@ -85,6 +85,8 @@ extension TextView.Representable {
 extension TextView.Representable.Coordinator {
 
     func update(representable: TextView.Representable) {
+			textView.translatesAutoresizingMaskIntoConstraints = true
+			textView.clipsToBounds = false
         textView.attributedText = representable.text
         textView.font = representable.font
         textView.adjustsFontForContentSizeCategory = true
@@ -128,12 +130,11 @@ extension TextView.Representable.Coordinator {
     }
 
     private func recalculateHeight() {
-        let newSize = textView.sizeThatFits(CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude))
-        guard calculatedHeight.wrappedValue != newSize.height else { return }
-
-        DispatchQueue.main.async { // call in next render cycle.
-            self.calculatedHeight.wrappedValue = newSize.height
-        }
+			DispatchQueue.main.async { // call in next render cycle.
+				let fitsHeight = self.textView.sizeThatFits(CGSize(width: self.textView.frame.width, height: .greatestFiniteMagnitude)).height
+				
+				self.calculatedHeight.wrappedValue = fitsHeight
+			}
     }
 
 }
